@@ -1,6 +1,6 @@
 @font-face {
     font-family: "sf6";
-    src: local("Street Fighter 6"), local("calibri");
+    src: local("Street Fighter 6"), url("SF6.ttf"), local("calibri");
     font-weight: bold;
 }
 
