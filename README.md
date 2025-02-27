@@ -17,6 +17,14 @@ furthermore the **font used was sourced from https://x.com/ahmz1404/status/16671
 5. By default the input history is setup to delete an entry after 30s, if you want to change this follow the instructions in the [change entry expiration time](#Change-entry-expiration-time)
 6. Enjoy your working input history overlay
 
+## IF THE GAMEPAD ISN'T WORKING UNLESS OBS IS IN FOCUS
+Some recent Cromium changes made it so that the gamepad only reads the input when it's in focus, and OBS' browser source uses chrome. To fix this you'll need to change the shortcut you use to launch OBS.
+Find the location of the shortcut you use to launch OBS, if using the start menu you can right click and select 'open file location'. Once you located the shortcut, open it's properties and add
+--disable-features=EnableWindowsGamingInputDataFetcher
+in the target field after the "..\obs64.exe" bit.
+In my case this would look like "C:\Program Files\obs-studio\bin\64bit\obs64.exe" --disable-features=EnableWindowsGamingInputDataFetcher
+Launch OBS from this shortcut and the gamepad inputs should work again
+
 ## Further instructions if you use analog stick
 Using an analog joystick is supported, though only the left one.
 
