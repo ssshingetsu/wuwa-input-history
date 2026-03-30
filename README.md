@@ -1,5 +1,5 @@
-# sf6-input-history
-sf6 styled input history browser source to use with OBS or other recording software
+# WW-input-history
+WuWa styled input history browser source to use with OBS or other recording software
 
 ## Disclaimer
 **follow the following instructions** or else I won't promise this'll work
