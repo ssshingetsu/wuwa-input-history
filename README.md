@@ -1,59 +1,61 @@
-# WW-input-history
-WuWa styled input history browser source to use with OBS or other recording software
+# Wuthering Waves Input Tracker
+Keyboard & mouse input tracker overlay for Wuthering Waves, designed as a browser source for OBS or other recording software.
 
-## Disclaimer
-**follow the following instructions** or else I won't promise this'll work
+## Features
+- **WASD + Mouse Overlay** — real-time movement and mouse button display
+- **Action Input History** — color-coded badges: BA, SKL, Echo, Lib, Tune, Dodge, Jump, Char1/2/3
+- **No directional clutter** — WASD shown only in the overlay
+- **Works in OBS** — uses a local WebSocket server to capture inputs globally (no focus needed)
+- **Transparent background** — drops straight into any OBS scene
 
-this is made using the javascript [gamepad API](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API) so it won't work with keyboards. I have no plans to make it work with keyboards but you're free to do that yourself
+## Setup
 
-furthermore the **font used was sourced from https://x.com/ahmz1404/status/1667148859771097091** so big thanks to them
+### 1. Install Python dependencies
+```
+pip install -r requirements.txt
+```
 
-## Usage instructions
-0. If you don't have the font yet, install it from [here](https://www.mediafire.com/file/zl7pa9941begw5b/SF6_FONT_100.zip/file) or from the above mentioned twitter thread
-1. Go to a gamepad testing site like https://hardwaretester.com/gamepad
-2. Open the config.json file and change the "code" attributes to whatever number the gamepad website tells you. For any macro you don't use **PLEASE** set it to -1 or else something might break
-3. Close the config.json file and run the updateConfig.bat batch file. This will simply take the json and copy it into a hardcode javascript variable to avoid dealing with websockets etc. <sup><sub>(if you don't trust the batch file just google a tutorial and check out what it says yourself, it's only 3 lines anyways)</sub></sup>
-4. Go to your recording software (ideally OBS), add a new browser source and select the index.html file. **remember to select "Local file" in the Properties tab**
-5. By default the input history is setup to delete an entry after 30s, if you want to change this follow the instructions in the [change entry expiration time](#Change-entry-expiration-time)
-6. Enjoy your working input history overlay
+### 2. Run the input server
+```
+python input_server.py
+```
+Keep this running while you play. It captures global keyboard/mouse inputs.
 
-## IF THE GAMEPAD ISN'T WORKING UNLESS OBS IS IN FOCUS
-Some recent Cromium changes made it so that the gamepad only reads the input when it's in focus, and OBS' browser source uses chrome. To fix this you'll need to change the shortcut you use to launch OBS.
+### 3. Add to OBS
+1. Add a **Browser Source** in OBS
+2. Check **"Local file"** and select `index.html`
+3. Recommended size: **600 x 975**
+4. Remove any auto-generated Custom CSS if it causes issues
 
-Find the location of the shortcut you use to launch OBS, if using the start menu you can right click and select 'open file location'. Once you located the shortcut, open it's properties and add
---disable-features=EnableWindowsGamingInputDataFetcher
-in the target field after the "..\obs64.exe" bit.
+The overlay will auto-connect to the input server and track your inputs even while the game is focused.
 
-In my case this would look like "C:\Program Files\obs-studio\bin\64bit\obs64.exe" --disable-features=EnableWindowsGamingInputDataFetcher
+## Tracked Inputs
+| Badge | Key | Color |
+|-------|-----|-------|
+| BA | Left Click | Red |
+| SKL | Q | Blue |
+| Echo | E | Pink |
+| Lib | R | Gold |
+| Tune | F | Cyan |
+| Dodge | Right Click | Green |
+| Jump | Space | Gray |
+| Char1/2/3 | 1/2/3 | Yellow |
 
-Launch OBS from this shortcut and the gamepad inputs should work again
-
-## Further instructions if you use analog stick
-Using an analog joystick is supported, though only the left one.
-
-It is setup to work together with the d-pad and clear SOCD with it too (SOCD is cleared with the CPT SF6 requirements of up+down=neutral and left+right=neutral).
-
-To enable it follow the next steps:
-
-1. In the config file in the topmost "analog" section, set "enable": true
-2. Change the deadzone to your preference. The default is a random number I found to seem reasonable. Deadzone is setup to be circular from the center of the joystick.
-3. Continue from step 3 in the [previous section](#usage-instructions)
-
-## OBS specific "optimizations"
-Inside the Properties tab there are two settings avaiable named *width* and *height*, for easier drag and dropping within your scene I would recommend setting these to:
-* width: 450
-* height: 975
-
-If OBS automatically writes some Custom CSS, remove it if it messes with things
+WASD is shown in the overlay only (not in history).
 
 ## Change entry expiration time
-1. Open the code.js file
-2. Locate the first line (it should say something along the following: "const EXPIRE_TIME = 1800;")
-3. Modify the number to be your desired interval, **in frames**. Consider that, same as the game, the overlay is running at 60fps
+1. Open `code.js`
+2. Edit the first line: `const EXPIRE_TIME = 1800;`
+3. Value is in **frames** at 60 fps
 
-Quick legend:
-* 60 = 1s
-* 300 = 5s
-* 600 = 10s
-* 1800 = 30s
-* 3600 = 1m
+| Frames | Duration |
+|--------|----------|
+| 60 | 1 s |
+| 300 | 5 s |
+| 600 | 10 s |
+| 1800 | 30 s (default) |
+| 3600 | 1 min |
+
+## Credits
+- Font sourced from [ahmz1404](https://x.com/ahmz1404/status/1667148859771097091)
+- Original gamepad project by ssshingetsu

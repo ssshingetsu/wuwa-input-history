@@ -4,6 +4,84 @@
     font-weight: bold;
 }
 
+* { box-sizing: border-box; }
+
+body {
+    background-color: transparent;
+    height: 100%;
+    overflow: hidden;
+    margin: 0;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+/* ── layout ─────────────────────────────── */
+#mainContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+#overlayContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* ── WASD grid ──────────────────────────── */
+#wasdOverlay {
+    display: grid;
+    grid-template-columns: repeat(3, 50px);
+    grid-template-rows: repeat(3, 50px);
+    gap: 5px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+}
+
+/* ── mouse button row ───────────────────── */
+#mouseOverlay {
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+}
+
+/* ── single overlay key cell ────────────── */
+.overlay-key {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: bold;
+    color: white;
+    background: rgba(50, 50, 50, 0.8);
+    border: 2px solid #555;
+    border-radius: 5px;
+    transition: background 0.05s, color 0.05s, border-color 0.05s;
+}
+
+.overlay-key.mouse-btn {
+    width: 65px;
+    font-size: 18px;
+}
+
+.overlay-key.active {
+    background: #00fbff;
+    color: black;
+    border-color: #006dcc;
+}
+
+/* ── history ────────────────────────────── */
+#lineContainer {
+    display: flex;
+    flex-direction: column;
+}
+
 .separator {
     background-image: url("./icons/border.png");
     background-size: contain;
@@ -14,38 +92,49 @@
     background-repeat: no-repeat;
 }
 
-.icon {
-    margin: auto;
-    vertical-align: top;
-    width: 36px;
-    /* padding: 2px; */
-    padding-right: 9px;
-    -webkit-filter: drop-shadow(1px 1px 0 black)
-                drop-shadow(-1px 1px 0 black)
-                drop-shadow(1px -1px 0 black)
-                drop-shadow(-1px -1px 0 black);
-
-    filter: drop-shadow(1px 1px 0 black)
-            drop-shadow(-1px 1px 0 black)
-            drop-shadow(1px -1px 0 black)
-            drop-shadow(-1px -1px 0 black);
+.line {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    margin-bottom: 2px;
+    position: relative;
+    min-height: 40px;
+    width: 100%;
+    padding-left: 100px;
 }
 
-body {
-    background-color: transparent;
-    height: 100%;
-    overflow: hidden;
+.key-icon {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 0 3px;
+    background: #2a2f3d;
+    color: white;
+    border-radius: 6px;
+    font-size: 20px;
+    font-weight: bold;
+    border: 2px solid #333;
+    text-shadow: none;
 }
+
+/* ── color-coded action badges ─────────── */
+.badge-ba    { border-color: #ff4c4c; color: #ff4c4c; }
+.badge-ha    { border-color: #ff8844; color: #ff8844; }
+.badge-skl   { border-color: #40ff66; color: #5dff40; }
+.badge-echo  { border-color: #ff6eb4; color: #ff6eb4; }
+.badge-lib   { border-color: #ffc040; color: #ffc040; }
+.badge-tune  { border-color: #00fff0; color: #00fff0; }
+.badge-dodge { border-color: #70ffdc; color: #70ffdc; }
+.badge-jump  { border-color: #8896a8; color: #b0bcc8; }
+.badge-char  { border-color: #ffffff; color: #ffffff; }
 
 span {
-    margin: auto;
-    font-family: "sf6";
+    font-family: "sf6", Arial, sans-serif;
     font-size: 36px;
-    /* padding: 2px; */
     padding-top: 3px;
     text-align: right;
-    width: 70px;
-    margin-right: 30px;
+    width: 80px;
     text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
-
+    position: absolute;
+    left: 0;
 }
