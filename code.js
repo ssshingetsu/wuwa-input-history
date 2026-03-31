@@ -7,11 +7,12 @@ let cycles = 0;
 let inputHistory = [];
 let cyclesHistory = [];
 let inputAge = [];
+let pressCount = [];
 
 let keysPressed = new Set();
 let mousePressed = new Set();
 let lmbHoldStart = 0;
-const HEAVY_ATTACK_THRESHOLD = 400;
+const HEAVY_ATTACK_THRESHOLD = 350;
 
 // bitmask mapping for all tracked keys
 const keyMapping = {
@@ -186,6 +187,12 @@ function init() {
       line.append(badge);
     });
 
+    const countLabel = document.createElement("span");
+    countLabel.setAttribute("id", `count-${i}`);
+    countLabel.setAttribute("class", "press-count");
+    countLabel.style.display = "none";
+    line.append(countLabel);
+
     lineContainer.append(line);
 
     const sep = document.createElement("div");
@@ -240,11 +247,18 @@ function updateStatus() {
 
   if (currentInput !== actionInput || expired) {
     if (currentInput !== actionInput && actionInput !== 0) {
-      inputHistory.unshift(actionInput);
+      // Only add new entry if it's different from the most recent one
+      if (inputHistory.length === 0 || inputHistory[0] !== actionInput) {
+        inputHistory.unshift(actionInput);
+        inputAge.unshift(0);
+        cyclesHistory.unshift(cycles);
+        pressCount.unshift(1);
+        cycles = 1;
+      } else {
+        // Same input pressed again - increment count
+        pressCount[0]++;
+      }
       currentInput = actionInput;
-      inputAge.unshift(0);
-      cyclesHistory.unshift(cycles);
-      cycles = 1;
     } else if (currentInput !== actionInput) {
       currentInput = actionInput;
     }
@@ -252,6 +266,7 @@ function updateStatus() {
     while (inputHistory.length > TOTAL_LINES) inputHistory.pop();
     while (inputAge.length > TOTAL_LINES) inputAge.pop();
     while (cyclesHistory.length > TOTAL_LINES - 1) cyclesHistory.pop();
+    while (pressCount.length > TOTAL_LINES) pressCount.pop();
 
     const lines = document.getElementById('lineContainer').getElementsByClassName("line");
     const seps  = document.getElementById('lineContainer').getElementsByClassName("separator");
@@ -270,6 +285,15 @@ function updateStatus() {
       const text = document.getElementById(`timer-${i}`);
       text.style.display = "inline-block";
       if (i > 0) text.textContent = cyclesHistory[i - 1];
+
+      const countLabel = document.getElementById(`count-${i}`);
+      const count = pressCount[i] || 1;
+      if (count > 1) {
+        countLabel.textContent = `x${count}`;
+        countLabel.style.display = "inline-block";
+      } else {
+        countLabel.style.display = "none";
+      }
 
       historyKeys.forEach(key => {
         document.getElementById(`key-${key}-${i}`).style.display =

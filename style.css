@@ -4,7 +4,9 @@
     font-weight: bold;
 }
 
-* { box-sizing: border-box; }
+* {
+    box-sizing: border-box;
+}
 
 body {
     background-color: transparent;
@@ -59,7 +61,7 @@ body {
     font-size: 22px;
     font-weight: bold;
     color: white;
-    background: rgba(50, 50, 50, 0.8);
+    background: rgba(15, 15, 15, 0.8);
     border: 2px solid #555;
     border-radius: 5px;
     transition: background 0.05s, color 0.05s, border-color 0.05s;
@@ -108,7 +110,7 @@ body {
     display: inline-block;
     padding: 5px 10px;
     margin: 0 3px;
-    background: #2a2f3d;
+    background: #121518;
     color: white;
     border-radius: 6px;
     font-size: 20px;
@@ -118,15 +120,50 @@ body {
 }
 
 /* ── color-coded action badges ─────────── */
-.badge-ba    { border-color: #ff4c4c; color: #ff4c4c; }
-.badge-ha    { border-color: #ff8844; color: #ff8844; }
-.badge-skl   { border-color: #40ff66; color: #5dff40; }
-.badge-echo  { border-color: #ff6eb4; color: #ff6eb4; }
-.badge-lib   { border-color: #ffc040; color: #ffc040; }
-.badge-tune  { border-color: #00fff0; color: #00fff0; }
-.badge-dodge { border-color: #70ffdc; color: #70ffdc; }
-.badge-jump  { border-color: #8896a8; color: #b0bcc8; }
-.badge-char  { border-color: #ffffff; color: #ffffff; }
+.badge-ba {
+    border-color: #ff4c4c;
+    color: #ff4c4c;
+}
+
+.badge-ha {
+    border-color: #ff8844;
+    color: #ff8844;
+}
+
+.badge-skl {
+    border-color: #40ff66;
+    color: #5dff40;
+}
+
+.badge-echo {
+    border-color: #ff6eb4;
+    color: #ff6eb4;
+}
+
+.badge-lib {
+    border-color: #ffc040;
+    color: #ffc040;
+}
+
+.badge-tune {
+    border-color: #00fff0;
+    color: #00fff0;
+}
+
+.badge-dodge {
+    border-color: #70ffdc;
+    color: #70ffdc;
+}
+
+.badge-jump {
+    border-color: #8896a8;
+    color: #b0bcc8;
+}
+
+.badge-char {
+    border-color: #ffffff;
+    color: #ffffff;
+}
 
 span {
     font-family: "sf6", Arial, sans-serif;
@@ -137,4 +174,19 @@ span {
     text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
     position: absolute;
     left: 0;
+}
+
+.press-count {
+    font-family: Arial, sans-serif;
+    font-size: 20px;
+    color: #ffffff;
+    margin-left: 10px;
+    font-weight: bold;
+    position: static;
+    width: auto;
+    text-shadow:
+        -2px -2px 0 black,
+        2px -2px 0 black,
+        -2px 2px 0 black,
+        2px 2px 0 black;
 }
