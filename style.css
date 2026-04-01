@@ -21,55 +21,55 @@ body {
 #mainContainer {
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 48px;
     align-items: flex-start;
 }
 
 #overlayContainer {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 16px;
 }
 
 /* ── WASD grid ──────────────────────────── */
 #wasdOverlay {
     display: grid;
-    grid-template-columns: repeat(3, 50px);
-    grid-template-rows: repeat(3, 50px);
-    gap: 5px;
-    padding: 10px;
+    grid-template-columns: repeat(3, 80px);
+    grid-template-rows: repeat(3, 80px);
+    gap: 8px;
+    padding: 16px;
     background: rgba(0, 0, 0, 0.5);
-    border-radius: 8px;
+    border-radius: 12px;
 }
 
 /* ── mouse button row ───────────────────── */
 #mouseOverlay {
     display: flex;
-    gap: 10px;
-    padding: 10px;
+    gap: 16px;
+    padding: 16px;
     background: rgba(0, 0, 0, 0.5);
-    border-radius: 8px;
+    border-radius: 12px;
 }
 
 /* ── single overlay key cell ────────────── */
 .overlay-key {
-    width: 50px;
-    height: 50px;
+    width: 80px;
+    height: 80px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 22px;
+    font-size: 35px;
     font-weight: bold;
     color: white;
     background: rgba(15, 15, 15, 0.8);
-    border: 2px solid #555;
-    border-radius: 5px;
+    border: 3px solid #555;
+    border-radius: 8px;
     transition: background 0.05s, color 0.05s, border-color 0.05s;
 }
 
 .overlay-key.mouse-btn {
-    width: 65px;
-    font-size: 18px;
+    width: 104px;
+    font-size: 28px;
 }
 
 .overlay-key.active {
@@ -87,10 +87,10 @@ body {
 .separator {
     background-image: url("./icons/border.png");
     background-size: contain;
-    height: 7px;
-    margin-bottom: 4px;
-    margin-top: -2px;
-    margin-left: 28px;
+    height: 11px;
+    margin-bottom: 6px;
+    margin-top: -3px;
+    margin-left: 45px;
     background-repeat: no-repeat;
 }
 
@@ -99,23 +99,23 @@ body {
     flex-direction: row;
     align-items: center;
     justify-content: flex-end;
-    margin-bottom: 2px;
+    margin-bottom: 3px;
     position: relative;
-    min-height: 40px;
+    min-height: 64px;
     width: 100%;
-    padding-left: 100px;
+    padding-left: 160px;
 }
 
 .key-icon {
     display: inline-block;
-    padding: 5px 10px;
-    margin: 0 3px;
+    padding: 8px 16px;
+    margin: 0 5px;
     background: #121518;
     color: white;
-    border-radius: 6px;
-    font-size: 20px;
+    border-radius: 9px;
+    font-size: 32px;
     font-weight: bold;
-    border: 2px solid #333;
+    border: 3px solid #333;
     text-shadow: none;
 }
 
@@ -165,28 +165,29 @@ body {
     color: #ffffff;
 }
 
-span {
+.timer {
     font-family: "sf6", Arial, sans-serif;
-    font-size: 36px;
-    padding-top: 3px;
+    font-size: 58px;
+    padding-top: 5px;
     text-align: right;
-    width: 80px;
-    text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+    width: 128px;
+    -webkit-text-stroke: 6px black;
+    paint-order: stroke fill;
     position: absolute;
     left: 0;
 }
 
 .press-count {
     font-family: Arial, sans-serif;
-    font-size: 20px;
+    font-size: 32px;
     color: #ffffff;
-    margin-left: 10px;
+    padding: 0;
+    margin: 0;
+    margin-left: 16px;
     font-weight: bold;
     position: static;
     width: auto;
-    text-shadow:
-        -2px -2px 0 black,
-        2px -2px 0 black,
-        -2px 2px 0 black,
-        2px 2px 0 black;
+    line-height: 1;
+    -webkit-text-stroke: 6px black;
+    paint-order: stroke fill;
 }

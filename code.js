@@ -8,6 +8,7 @@ let inputHistory = [];
 let cyclesHistory = [];
 let inputAge = [];
 let pressCount = [];
+let isAlternatingCombo = []; // Track which combos are from alternation (true) vs simultaneous (false)
 
 let keysPressed = new Set();
 let mousePressed = new Set();
@@ -35,17 +36,17 @@ const keyMapping = {
 
 // display names and color classes for history badges
 const keyDisplay = {
-  'mouse0': { label: 'BA',    css: 'badge-ba' },
-  'heavy':  { label: 'HA',    css: 'badge-ha' },
+  'mouse0': { label: 'BA', css: 'badge-ba' },
+  'heavy': { label: 'HA', css: 'badge-ha' },
   'mouse2': { label: 'Dodge', css: 'badge-dodge' },
-  'q':      { label: 'Echo',  css: 'badge-echo' },
-  'e':      { label: 'SKL',   css: 'badge-skl' },
-  'r':      { label: 'Lib',   css: 'badge-lib' },
-  'f':      { label: 'TB',    css: 'badge-tune' },
-  'space':  { label: 'Jump',  css: 'badge-jump' },
-  '1':      { label: 'P1', css: 'badge-char' },
-  '2':      { label: 'P2', css: 'badge-char' },
-  '3':      { label: 'P3', css: 'badge-char' }
+  'q': { label: 'Echo', css: 'badge-echo' },
+  'e': { label: 'SKL', css: 'badge-skl' },
+  'r': { label: 'Lib', css: 'badge-lib' },
+  'f': { label: 'TB', css: 'badge-tune' },
+  'space': { label: 'Jump', css: 'badge-jump' },
+  '1': { label: 'P1', css: 'badge-char' },
+  '2': { label: 'P2', css: 'badge-char' },
+  '3': { label: 'P3', css: 'badge-char' }
 };
 
 // keys that appear in the history (no WASD)
@@ -71,7 +72,7 @@ function connectWebSocket() {
         keysPressed = new Set(data.keys);
         mousePressed = new Set(data.mouse);
       }
-    } catch (e) {}
+    } catch (e) { }
   };
 
   ws.onclose = () => {
@@ -170,6 +171,7 @@ function init() {
 
     const timer = document.createElement("span");
     timer.setAttribute("id", `timer-${i}`);
+    timer.setAttribute("class", "timer");
     timer.textContent = "0";
     timer.style.color = "white";
     timer.style.display = "none";
@@ -247,17 +249,108 @@ function updateStatus() {
 
   if (currentInput !== actionInput || expired) {
     if (currentInput !== actionInput && actionInput !== 0) {
-      // Only add new entry if it's different from the most recent one
-      if (inputHistory.length === 0 || inputHistory[0] !== actionInput) {
-        inputHistory.unshift(actionInput);
-        inputAge.unshift(0);
-        cyclesHistory.unshift(cycles);
-        pressCount.unshift(1);
-        cycles = 1;
-      } else {
-        // Same input pressed again - increment count
-        pressCount[0]++;
+      // Check if we're alternating between two inputs
+      let isAlternatingPattern = false;
+
+      if (inputHistory.length >= 1) {
+        const prev1 = inputHistory[0];
+
+        // Check if prev1 is a combo pattern (has multiple bits set)
+        const bitsSet = prev1.toString(2).split('1').length - 1;
+
+        if (bitsSet === 2) {
+          // Previous entry is a 2-button combo - only continue if it's an alternating combo
+          const currentBits = actionInput.toString(2).split('1').length - 1;
+          if ((actionInput & prev1) === actionInput && actionInput !== 0 && currentBits === 1 && isAlternatingCombo[0]) {
+            // Current input is part of the alternating combo pattern, increment count
+            pressCount[0]++;
+            isAlternatingPattern = true;
+          }
+        } else if (inputHistory.length >= 2) {
+          // Check for new alternating pattern
+          const prev2 = inputHistory[1];
+
+          // STRICT CHECK: Only create combo if:
+          // 1. Pattern is A→B→A
+          // 2. ALL entries are single presses (no spam)
+          // 3. Each entry is a single button press (not simultaneous multi-button)
+          // 4. No same input appears anywhere in recent history with spam count
+
+          // Check that prev1 and prev2 are single-button presses
+          const prev1Bits = prev1.toString(2).split('1').length - 1;
+          const prev2Bits = prev2.toString(2).split('1').length - 1;
+          const currentBits = actionInput.toString(2).split('1').length - 1;
+
+          const isCleanAlternation =
+            actionInput === prev2 &&
+            prev1 !== prev2 &&
+            pressCount[0] === 1 &&
+            pressCount[1] === 1 &&
+            prev1Bits === 1 &&
+            prev2Bits === 1 &&
+            currentBits === 1;
+
+          // Additional check: make sure NEITHER input was spammed recently
+          let hasRecentSpam = false;
+          for (let i = 2; i < Math.min(inputHistory.length, 5); i++) {
+            // Check if either the current input OR the other button in pattern was spammed
+            if ((inputHistory[i] === actionInput || inputHistory[i] === prev1) && pressCount[i] > 1) {
+              hasRecentSpam = true;
+              break;
+            }
+          }
+
+          if (isCleanAlternation && !hasRecentSpam) {
+            // This is a true alternating pattern
+            const combinedPattern = prev1 | prev2;
+
+            // Replace the last two entries with the combo
+            inputHistory.shift(); // Remove prev1
+            inputHistory.shift(); // Remove prev2
+            inputHistory.unshift(combinedPattern);
+
+            pressCount.shift();
+            pressCount.shift();
+            pressCount.unshift(2); // Start with count of 2 (the two we just merged)
+
+            isAlternatingCombo.shift();
+            isAlternatingCombo.shift();
+            isAlternatingCombo.unshift(true); // Mark as alternating combo
+
+            cyclesHistory.shift();
+
+            isAlternatingPattern = true;
+          }
+        }
       }
+
+      if (!isAlternatingPattern) {
+        // Normal single input handling
+        // Check if this is a single-button press (not simultaneous multi-button)
+        const currentBits = actionInput.toString(2).split('1').length - 1;
+        const canMerge = currentBits === 1; // Only merge single button presses
+
+        if (inputHistory.length === 0 || inputHistory[0] !== actionInput) {
+          inputHistory.unshift(actionInput);
+          inputAge.unshift(0);
+          cyclesHistory.unshift(cycles);
+          pressCount.unshift(1);
+          isAlternatingCombo.unshift(false); // Not an alternating combo
+          cycles = 1;
+        } else if (canMerge) {
+          // Same single button pressed again - increment count
+          pressCount[0]++;
+        } else {
+          // Multi-button press - don't merge, create new entry
+          inputHistory.unshift(actionInput);
+          inputAge.unshift(0);
+          cyclesHistory.unshift(cycles);
+          pressCount.unshift(1);
+          isAlternatingCombo.unshift(false); // Simultaneous press, not alternating
+          cycles = 1;
+        }
+      }
+
       currentInput = actionInput;
     } else if (currentInput !== actionInput) {
       currentInput = actionInput;
@@ -267,9 +360,10 @@ function updateStatus() {
     while (inputAge.length > TOTAL_LINES) inputAge.pop();
     while (cyclesHistory.length > TOTAL_LINES - 1) cyclesHistory.pop();
     while (pressCount.length > TOTAL_LINES) pressCount.pop();
+    while (isAlternatingCombo.length > TOTAL_LINES) isAlternatingCombo.pop();
 
     const lines = document.getElementById('lineContainer').getElementsByClassName("line");
-    const seps  = document.getElementById('lineContainer').getElementsByClassName("separator");
+    const seps = document.getElementById('lineContainer').getElementsByClassName("separator");
 
     for (let i = 0; i < TOTAL_LINES; i++) {
       if (i >= inputHistory.length) {
