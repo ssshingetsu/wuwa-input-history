@@ -326,28 +326,17 @@ function updateStatus() {
 
       if (!isAlternatingPattern) {
         // Normal single input handling
-        // Check if this is a single-button press (not simultaneous multi-button)
-        const currentBits = actionInput.toString(2).split('1').length - 1;
-        const canMerge = currentBits === 1; // Only merge single button presses
-
         if (inputHistory.length === 0 || inputHistory[0] !== actionInput) {
+          // New input - create new entry
           inputHistory.unshift(actionInput);
           inputAge.unshift(0);
           cyclesHistory.unshift(cycles);
           pressCount.unshift(1);
           isAlternatingCombo.unshift(false); // Not an alternating combo
           cycles = 1;
-        } else if (canMerge) {
-          // Same single button pressed again - increment count
-          pressCount[0]++;
         } else {
-          // Multi-button press - don't merge, create new entry
-          inputHistory.unshift(actionInput);
-          inputAge.unshift(0);
-          cyclesHistory.unshift(cycles);
-          pressCount.unshift(1);
-          isAlternatingCombo.unshift(false); // Simultaneous press, not alternating
-          cycles = 1;
+          // Same input pressed again (single or multi-button) - increment count
+          pressCount[0]++;
         }
       }
 
