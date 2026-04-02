@@ -24,7 +24,7 @@ Keep this running while you play. It captures global keyboard/mouse inputs.
 ### 3. Add to OBS
 1. Add a **Browser Source** in OBS
 2. Check **"Local file"** and select `index.html`
-3. Recommended size: **600 x 975**
+3. Recommended size: **500 x 1275**
 4. Remove any auto-generated Custom CSS if it causes issues
 
 The overlay will auto-connect to the input server and track your inputs even while the game is focused.
