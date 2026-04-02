@@ -1,4 +1,4 @@
-const EXPIRE_TIME = 1800;
+const EXPIRE_TIME = 600;
 const TOTAL_LINES = 19;
 let intervalId;
 let currentInput = 0;
