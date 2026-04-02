@@ -55,7 +55,3 @@ WASD is shown in the overlay only (not in history).
 | 600 | 10 s |
 | 1800 | 30 s (default) |
 | 3600 | 1 min |
-
-## Credits
-- Font sourced from [ahmz1404](https://x.com/ahmz1404/status/1667148859771097091)
-- Original gamepad project by ssshingetsu
